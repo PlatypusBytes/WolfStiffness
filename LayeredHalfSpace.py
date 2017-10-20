@@ -225,10 +225,11 @@ def write_output(path, data, omega):
     import numpy as np
     import os
 
-    path_results = os.path.split(path)[0]
+    path_results, name = os.path.split(path)[:2]
+    name = name.split(".csv")[0]
 
     # write table => frequency ; complex stiffness
-    with open(os.path.join(path_results, r"k_dyn.csv"), "w") as f:
+    with open(os.path.join(path_results, "Kdyn_" + str(name) + ".csv"), "w") as f:
         f.write("omega [rad/s]; dynamic stiffness [N/m2]\n")
         for i in range(len(omega)):
             f.write(str(omega[i]) + ";" +
@@ -240,7 +241,7 @@ def write_output(path, data, omega):
     plt.xlabel('$\omega [rad/s]$')
     plt.ylabel('K$_{dyn} [Nm/]$')
     plt.xlim(omega[0], omega[-1])
-    plt.savefig(os.path.join(path_results, "K_dyn.png"))
+    plt.savefig(os.path.join(path_results, "Kdyn_" + str(name) + ".png"))
     plt.close()
 
     return
