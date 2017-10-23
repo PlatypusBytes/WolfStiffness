@@ -234,7 +234,7 @@ def write_output(path, data, omega):
         for i in range(len(omega)):
             f.write(str(omega[i]) + ";" +
                     str(np.real(data.K_dyn[i])) + ";" +
-                    + str(np.imag(data.K_dyn[i])) + "j\n")
+                    str(np.imag(data.K_dyn[i])) + "\n")
 
     # make graph
     plt.plot(omega, data.K_dyn)
