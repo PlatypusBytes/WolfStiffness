@@ -237,11 +237,12 @@ def write_output(path, data, omega):
                     str(np.imag(data.K_dyn[i])) + "\n")
 
     # make graph
-    plt.plot(omega, data.K_dyn)
+    plt.plot(omega, np.abs(np.real(data.K_dyn)))
     plt.grid('on')
     plt.xlabel('$\omega [rad/s]$')
     plt.ylabel('K$_{dyn} [Nm/]$')
     plt.xlim(omega[0], omega[-1])
+    plt.ylim(bottom=0)
     plt.savefig(os.path.join(path_results, "Kdyn_" + str(name) + ".png"))
     plt.close()
 
