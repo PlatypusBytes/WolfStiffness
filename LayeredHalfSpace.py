@@ -240,7 +240,7 @@ def write_output(path, data, omega):
     plt.plot(omega, np.abs(np.real(data.K_dyn)))
     plt.grid('on')
     plt.xlabel('$\omega [rad/s]$')
-    plt.ylabel('K$_{dyn} [Nm/]$')
+    plt.ylabel('K$_{dyn} [N/m]$')
     plt.xlim(omega[0], omega[-1])
     plt.ylim(bottom=0)
     plt.savefig(os.path.join(path_results, "Kdyn_" + str(name) + ".png"))
