@@ -1,4 +1,4 @@
-def wolf_stiffness(layer_file, omega):
+def wolf_stiffness(layer_file, omega, freq=False):
     """Dynamic stiffness according to Wolf and Deeks
        Layered soil solution
        Only considers the translational cones. The rotational cones are not considered
@@ -15,7 +15,7 @@ def wolf_stiffness(layer_file, omega):
     data.static_cone()
     data.dynamic_stiffness(omega)
 
-    LayeredHalfSpace.write_output(layer_file, data, omega)
+    LayeredHalfSpace.write_output(layer_file, data, omega, freq)
 
     return data
 

@@ -220,7 +220,7 @@ def read_file(file_name):
     return lines
 
 
-def write_output(path, data, omega):
+def write_output(path, data, omega, freq):
     import matplotlib.pylab as plt
     import numpy as np
     import os
@@ -236,12 +236,21 @@ def write_output(path, data, omega):
                     str(np.real(data.K_dyn[i])) + ";" +
                     str(np.imag(data.K_dyn[i])) + "\n")
 
-    # make graph
-    plt.plot(omega, np.abs(np.real(data.K_dyn)))
-    plt.grid('on')
-    plt.xlabel('$\omega [rad/s]$')
-    plt.ylabel('K$_{dyn} [N/m]$')
-    plt.xlim(omega[0], omega[-1])
+    if freq:
+        # make graph
+        plt.plot(omega / 2. / np.pi, np.abs(np.real(data.K_dyn)))
+        plt.grid('on')
+        plt.xlabel('Frequency [Hz]')
+        plt.ylabel('K$_{dyn}$ [N/m]')
+        plt.xlim(omega[0], omega[-1] / 2. / np.pi)
+    else:
+        # make graph
+        plt.plot(omega, np.abs(np.real(data.K_dyn)))
+        plt.grid('on')
+        plt.xlabel('$\omega$ [rad/s]')
+        plt.ylabel('K$_{dyn}$ [N/m]')
+        plt.xlim(omega[0], omega[-1])
+
     plt.ylim(bottom=0)
     plt.savefig(os.path.join(path_results, "Kdyn_" + str(name) + ".png"))
     plt.close()
