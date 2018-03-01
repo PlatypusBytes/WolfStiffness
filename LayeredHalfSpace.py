@@ -5,6 +5,7 @@ class Layers:
 
     def __init__(self, data):
         import numpy as np
+        np.seterr(all="ignore")
 
         # create variables
         self.name = []
@@ -105,7 +106,8 @@ class Layers:
 
     def transmit(self, direction, index, radius, u0, omega):
         import numpy as np
-
+        np.seterr(divide="ignore")
+        
         if direction == -1:  # up
             idx_layer_A = index + 1
             idx_layer_B = index
