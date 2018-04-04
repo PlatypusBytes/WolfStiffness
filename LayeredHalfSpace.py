@@ -232,11 +232,11 @@ def write_output(path, data, omega, freq):
 
     # write table => frequency ; complex stiffness
     with open(os.path.join(path_results, "Kdyn_" + str(name) + ".csv"), "w") as f:
-        f.write("omega [rad/s];dynamic stiffness [N/m2];phase delay [degree]\n")
+        f.write("omega [rad/s];dynamic stiffness [N/m];damping [Ns/m]\n")
         for i in range(len(omega)):
             f.write(str(omega[i]) + ";" +
                     str(np.real(data.K_dyn[i])) + ";" +
-                    str(np.imag(data.K_dyn[i])) + "\n")
+                    str(np.imag(data.K_dyn[i]) / omega[i]) + "\n")
 
     if freq:
         # make graph
@@ -257,4 +257,22 @@ def write_output(path, data, omega, freq):
     plt.savefig(os.path.join(path_results, "Kdyn_" + str(name) + ".png"))
     plt.close()
 
+    if freq:
+        # make graph
+        plt.plot(omega / 2. / np.pi, np.imag(data.K_dyn) / omega)
+        plt.grid('on')
+        plt.xlabel('Frequency [Hz]')
+        plt.ylabel('Damping [Ns]')
+        plt.xlim(omega[0], omega[-1] / 2. / np.pi)
+    else:
+        # make graph
+        plt.plot(omega, np.imag(data.K_dyn) / omega)
+        plt.grid('on')
+        plt.xlabel('$\omega$ [rad/s]')
+        plt.ylabel('Damping [Ns]')
+        plt.xlim(omega[0], omega[-1])
+
+    plt.ylim(bottom=0)
+    plt.savefig(os.path.join(path_results, "Cdyn_" + str(name) + ".png"))
+    plt.close()
     return
