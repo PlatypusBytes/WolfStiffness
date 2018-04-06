@@ -236,7 +236,7 @@ def write_output(path, data, omega, freq):
         for i in range(len(omega)):
             f.write(str(omega[i]) + ";" +
                     str(np.real(data.K_dyn[i])) + ";" +
-                    str(np.imag(data.K_dyn[i]) / omega[i]) + "\n")
+                    str(np.imag((data.K_dyn[i]) / (omega[i] * data.radius / data.cs[1]))) + "\n")
 
     if freq:
         # make graph
@@ -259,17 +259,17 @@ def write_output(path, data, omega, freq):
 
     if freq:
         # make graph
-        plt.plot(omega / 2. / np.pi, np.imag(data.K_dyn) / omega)
+        plt.plot(omega / 2. / np.pi, np.imag(data.K_dyn / (omega * data.radius / data.cs[1])))
         plt.grid('on')
         plt.xlabel('Frequency [Hz]')
-        plt.ylabel('Damping [Ns]')
+        plt.ylabel('Damping [Ns/m]')
         plt.xlim(omega[0], omega[-1] / 2. / np.pi)
     else:
         # make graph
-        plt.plot(omega, np.imag(data.K_dyn) / omega)
+        plt.plot(omega, np.imag(data.K_dyn / (omega * data.radius / data.cs[1])))
         plt.grid('on')
         plt.xlabel('$\omega$ [rad/s]')
-        plt.ylabel('Damping [Ns]')
+        plt.ylabel('Damping [Ns/m]')
         plt.xlim(omega[0], omega[-1])
 
     plt.ylim(bottom=0)
