@@ -230,7 +230,7 @@ def write_output(path, data, omega, freq):
     path_results, name = os.path.split(path)[:2]
     name = name.split(".csv")[0]
 
-    # write table => frequency ; complex stiffness
+    # write table => frequency ; complex stiffness: check information on page 5 of Wolf and Deeks
     with open(os.path.join(path_results, "Kdyn_" + str(name) + ".csv"), "w") as f:
         f.write("omega [rad/s];dynamic stiffness [N/m];damping [Ns/m]\n")
         for i in range(len(omega)):
