@@ -241,14 +241,14 @@ def write_output(path, data, omega, freq):
     if freq:
         # make graph
         plt.plot(omega / 2. / np.pi, np.abs(np.real(data.K_dyn)))
-        plt.grid('on')
+        plt.grid()
         plt.xlabel('Frequency [Hz]')
         plt.ylabel('K$_{dyn}$ [N/m]')
         plt.xlim(omega[0], omega[-1] / 2. / np.pi)
     else:
         # make graph
         plt.plot(omega, np.abs(np.real(data.K_dyn)))
-        plt.grid('on')
+        plt.grid()
         plt.xlabel('$\omega$ [rad/s]')
         plt.ylabel('K$_{dyn}$ [N/m]')
         plt.xlim(omega[0], omega[-1])
@@ -260,14 +260,14 @@ def write_output(path, data, omega, freq):
     if freq:
         # make graph
         plt.plot(omega / 2. / np.pi, np.imag(data.K_dyn / (omega * data.radius / data.cs[1])))
-        plt.grid('on')
+        plt.grid()
         plt.xlabel('Frequency [Hz]')
         plt.ylabel('Damping [Ns/m]')
         plt.xlim(omega[0], omega[-1] / 2. / np.pi)
     else:
         # make graph
         plt.plot(omega, np.imag(data.K_dyn / (omega * data.radius / data.cs[1])))
-        plt.grid('on')
+        plt.grid()
         plt.xlabel('$\omega$ [rad/s]')
         plt.ylabel('Damping [Ns/m]')
         plt.xlim(omega[0], omega[-1])
