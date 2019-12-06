@@ -24,6 +24,7 @@ class Layers:
         self.amplitude = []
         self.Gn = []
         self.K_dyn = []
+        self.static_stiff = []
 
         # assign data
         for idx, layer in enumerate(data):
@@ -198,10 +199,11 @@ class Layers:
         # dynamic load
         # pg 32 Eq: 3.16 (trapped mass pg. 45 Eq: 3.87)
         for i in range(len(self.name)):
-            self.P.append(self.rho[i] * self.c[i] ** 2 * np.pi * self.radius ** 2 / self.z0_r[i] +
-                          1j * omega * self.rho[i] * self.c[i] * np.pi * self.radius +
+            self.P.append(self.rho[i] * self.c[i] ** 2 * np.pi * self.radius ** 2 / (self.z0_r[i] * self.radius) +
+                          1j * omega * self.rho[i] * self.c[i] * np.pi * self.radius ** 2 +
                           - omega ** 2 * self.delta_M[i])
 
+            self.static_stiff.append(self.rho[i] * self.c[i] ** 2 * np.pi * self.radius ** 2 / (self.z0_r[i] * self.radius))
         return
 
 
@@ -230,49 +232,61 @@ def write_output(path, data, omega, freq):
     path_results, name = os.path.split(path)[:2]
     name = name.split(".csv")[0]
 
-    # write table => frequency ; complex stiffness: check information on page 5 of Wolf and Deeks
+    # write table => frequency ; complex stiffness (real; imaginary)
     with open(os.path.join(path_results, "Kdyn_" + str(name) + ".csv"), "w") as f:
         f.write("omega [rad/s];dynamic stiffness [N/m];damping [Ns/m]\n")
         for i in range(len(omega)):
             f.write(str(omega[i]) + ";" +
                     str(np.real(data.K_dyn[i])) + ";" +
-                    str(np.imag((data.K_dyn[i]) / (omega[i] * data.radius / data.cs[1]))) + "\n")
+                    str(np.imag(data.K_dyn[i])) + "\n")
 
     if freq:
         # make graph
-        plt.plot(omega / 2. / np.pi, np.abs(np.real(data.K_dyn)))
+        plt.plot(omega / 2. / np.pi, np.real(np.real(data.K_dyn)))
         plt.grid()
-        plt.xlabel('Frequency [Hz]')
-        plt.ylabel('K$_{dyn}$ [N/m]')
+        plt.xlabel(r'Frequency [Hz]')
+        plt.ylabel(r'K$_{dyn}$ [N/m]')
         plt.xlim(omega[0], omega[-1] / 2. / np.pi)
     else:
         # make graph
-        plt.plot(omega, np.abs(np.real(data.K_dyn)))
+        plt.plot(omega, np.real(data.K_dyn))
         plt.grid()
-        plt.xlabel('$\omega$ [rad/s]')
-        plt.ylabel('K$_{dyn}$ [N/m]')
+        plt.xlabel(r'$\omega$ [rad/s]')
+        plt.ylabel(r'K$_{dyn}$ [N/m]')
         plt.xlim(omega[0], omega[-1])
 
-    plt.ylim(bottom=0)
     plt.savefig(os.path.join(path_results, "Kdyn_" + str(name) + ".png"))
     plt.close()
 
     if freq:
         # make graph
-        plt.plot(omega / 2. / np.pi, np.imag(data.K_dyn / (omega * data.radius / data.cs[1])))
+        plt.plot(omega / 2. / np.pi, np.imag(data.K_dyn))
         plt.grid()
-        plt.xlabel('Frequency [Hz]')
-        plt.ylabel('Damping [Ns/m]')
+        plt.xlabel(r'Frequency [Hz]')
+        plt.ylabel(r'Damping [Ns/m]')
         plt.xlim(omega[0], omega[-1] / 2. / np.pi)
     else:
         # make graph
-        plt.plot(omega, np.imag(data.K_dyn / (omega * data.radius / data.cs[1])))
+        plt.plot(omega, np.imag(data.K_dyn))
         plt.grid()
-        plt.xlabel('$\omega$ [rad/s]')
-        plt.ylabel('Damping [Ns/m]')
+        plt.xlabel(r'$\omega$ [rad/s]')
+        plt.ylabel(r'Damping [Ns/m]')
         plt.xlim(omega[0], omega[-1])
 
-    plt.ylim(bottom=0)
     plt.savefig(os.path.join(path_results, "Cdyn_" + str(name) + ".png"))
     plt.close()
     return
+
+# Validation with Wolf & Deeks pg: 108
+# parameters:
+# Force      -       -            -     -     -    1  V/H
+# Layer1     1000.0  0.25         1800  0.05  1    -  -
+# Layer2     500.0   0.3          1800  0.05  0.5  -  -
+# halfspace  200.0   0.333333333  1602  0.05  inf  -  -
+#
+# omega = omega * data.radius / data.cs[data.load_idx]
+# Stiffness
+# plt.plot(omega, np.real(data.K_dyn / data.static_stiff[data.load_idx]))
+# Damping
+# a0 = omega * data.radius / data.cs[data.load_idx]
+# plt.plot(omega, np.imag(data.K_dyn / a0 / data.static_stiff[data.load_idx]))
