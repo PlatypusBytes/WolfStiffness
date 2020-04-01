@@ -1,12 +1,16 @@
+import sys
+import os
+import matplotlib.pylab as plt
+import numpy as np
+np.seterr(all="ignore")
+
+
 class Layers:
     """ Based on Foundation vibration analysis: A strength of materials approach
         Wolf & Deeks
         """
 
     def __init__(self, data):
-        import numpy as np
-        np.seterr(all="ignore")
-
         # create variables
         self.name = []
         self.G = []
@@ -56,8 +60,6 @@ class Layers:
         return
 
     def assign_properties(self):
-        import numpy as np
-        import sys
 
         for i in range(len(self.name)):
             G_star = self.G[i] * (1. + 2. * 1j * self.qsi[i])
@@ -76,7 +78,6 @@ class Layers:
         return
 
     def dynamic_stiffness(self, omega):
-        import numpy as np
 
         # generate variable amplitude
         for i in range(len(self.amplitude)):
@@ -106,9 +107,7 @@ class Layers:
         return
 
     def transmit(self, direction, index, radius, u0, omega):
-        import numpy as np
-        np.seterr(divide="ignore")
-        
+
         if direction == -1:  # up
             idx_layer_A = index + 1
             idx_layer_B = index
@@ -141,6 +140,7 @@ class Layers:
         return
 
     def alpha(self, idx_A, idx_B, rad, omega):
+
         # alpha
         # pg 58 Eq: 4.16-4.18
         beta_A = self.rho[idx_A] * self.c[idx_A]**2 * (1. / (self.z0_r[idx_A] * rad) +
@@ -159,7 +159,6 @@ class Layers:
         return alpha
 
     def static_cone(self):
-        import numpy as np
 
         # compute static cone apex
         for i in range(len(self.name)):
@@ -176,7 +175,7 @@ class Layers:
         return
 
     def correction_incompressible(self):
-        import numpy as np
+
         # correction for incompressible solids
         # the compression wave, as poisson gets to 0.5 tends to infinite
         # pg. 44 section: 3.4
@@ -195,7 +194,7 @@ class Layers:
         return
 
     def stiff_cone(self, omega):
-        import numpy as np
+
         # dynamic load
         # pg 32 Eq: 3.16 (trapped mass pg. 45 Eq: 3.87)
         for i in range(len(self.name)):
@@ -208,8 +207,6 @@ class Layers:
 
 
 def read_file(file_name):
-    import os
-    import sys
 
     if not os.path.isfile(file_name):
         sys.exit("Layers file name does not exist.")
@@ -225,9 +222,6 @@ def read_file(file_name):
 
 
 def write_output(path, data, omega, freq):
-    import matplotlib.pylab as plt
-    import numpy as np
-    import os
 
     path_results, name = os.path.split(path)[:2]
     name = name.split(".csv")[0]
