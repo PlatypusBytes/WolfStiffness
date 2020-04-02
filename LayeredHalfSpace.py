@@ -228,11 +228,12 @@ def write_output(path, data, omega, freq):
 
     # write table => frequency ; complex stiffness (real; imaginary)
     with open(os.path.join(path_results, "Kdyn_" + str(name) + ".csv"), "w") as f:
-        f.write("omega [rad/s];dynamic stiffness [N/m];damping [Ns/m]\n")
+        f.write("omega [rad/s];Dynamic stiffness [N/m2];Stifness [N/m2];Damping [Ns/m2]\n")
         for i in range(len(omega)):
             f.write(str(omega[i]) + ";" +
+                    str(data.K_dyn[i]) + ";" +
                     str(np.real(data.K_dyn[i])) + ";" +
-                    str(np.imag(data.K_dyn[i])) + "\n")
+                    str(np.imag(data.K_dyn[i] * data.radius / data.cs[1]) / omega[i]) + "\n")
 
     if freq:
         # make graph
