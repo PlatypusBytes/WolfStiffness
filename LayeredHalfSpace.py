@@ -226,49 +226,61 @@ def write_output(path, data, omega, freq):
     path_results, name = os.path.split(path)[:2]
     name = name.split(".csv")[0]
 
+    # tmp variables for plot
+    stiff_tmp = []
+    damp_tmp = []
+
     # write table => frequency ; complex stiffness (real; imaginary)
     with open(os.path.join(path_results, "Kdyn_" + str(name) + ".csv"), "w") as f:
-        f.write("omega [rad/s];Dynamic stiffness [N/m2];Stifness [N/m2];Damping [Ns/m2]\n")
+        f.write("omega [rad/s];Complex dynamic stiffness [N/m2];Stiffness [N/m2];Damping [Ns/m2]\n")
         for i in range(len(omega)):
             f.write(str(omega[i]) + ";" +
                     str(data.K_dyn[i]) + ";" +
                     str(np.real(data.K_dyn[i])) + ";" +
                     str(np.imag(data.K_dyn[i] * data.radius / data.cs[1]) / omega[i]) + "\n")
+            # add to tmp variables
+            stiff_tmp.append(np.abs(np.real(data.K_dyn[i])))
+            damp_tmp.append(np.abs(np.imag(data.K_dyn[i] * data.radius / data.cs[1]) / omega[i]))
 
+
+    # make plots
     if freq:
-        # make graph
-        plt.plot(omega / 2. / np.pi, np.real(np.real(data.K_dyn)))
-        plt.grid()
-        plt.xlabel(r'Frequency [Hz]')
-        plt.ylabel(r'K$_{dyn}$ [N/m]')
-        plt.xlim(omega[0], omega[-1] / 2. / np.pi)
+        # if frequency
+        create_plot(omega / 2. / np.pi, stiff_tmp, damp_tmp, "Frequency [Hz]", path_results, name)
     else:
-        # make graph
-        plt.plot(omega, np.real(data.K_dyn))
-        plt.grid()
-        plt.xlabel(r'$\omega$ [rad/s]')
-        plt.ylabel(r'K$_{dyn}$ [N/m]')
-        plt.xlim(omega[0], omega[-1])
+        # if angular frequency
+        create_plot(omega / 2. / np.pi, stiff_tmp, damp_tmp, r"$\omega$ [rad/s]", path_results, name)
 
-    plt.savefig(os.path.join(path_results, "Kdyn_" + str(name) + ".png"))
-    plt.close()
+    return
 
-    if freq:
-        # make graph
-        plt.plot(omega / 2. / np.pi, np.imag(data.K_dyn))
-        plt.grid()
-        plt.xlabel(r'Frequency [Hz]')
-        plt.ylabel(r'Damping [Ns/m]')
-        plt.xlim(omega[0], omega[-1] / 2. / np.pi)
-    else:
-        # make graph
-        plt.plot(omega, np.imag(data.K_dyn))
-        plt.grid()
-        plt.xlabel(r'$\omega$ [rad/s]')
-        plt.ylabel(r'Damping [Ns/m]')
-        plt.xlim(omega[0], omega[-1])
 
-    plt.savefig(os.path.join(path_results, "Cdyn_" + str(name) + ".png"))
+def create_plot(frequency, stiff, damp, label_x, path_results, name):
+
+    # create figure
+    fig, ax = plt.subplots(1, 2, figsize=(8.5, 3.5))
+    ax[0].set_position([0.13, 0.13, 0.35, 0.80])
+    ax[1].set_position([0.60, 0.13, 0.35, 0.80])
+    plt.rcParams.update({'font.size': 10})
+
+    # plot stiffness
+    ax[0].grid()
+    ax[0].plot(frequency, stiff)
+    ax[0].set_xlabel(label_x)
+    ax[0].set_ylabel(r'K$_{dyn}$ [N/m]')
+    ax[0].set_xlim((frequency[0], frequency[-1]))
+    # ax[0].set_ylim(bottom=0)
+
+    # plot damping
+    ax[1].grid()
+    ax[1].plot(frequency, damp)
+    ax[1].set_xlabel(label_x)
+    ax[1].set_ylabel(r'Damping [Ns/m]')
+    ax[1].set_xlim((frequency[0], frequency[-1]))
+    # ax[1].set_ylim(bottom=0)
+
+    # save fig
+    plt.savefig(os.path.join(path_results, str(name) + ".png"))
+    plt.savefig(os.path.join(path_results, str(name) + ".pdf"))
     plt.close()
     return
 
