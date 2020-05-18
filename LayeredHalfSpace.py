@@ -249,7 +249,7 @@ def write_output(path, data, omega, freq):
         create_plot(omega / 2. / np.pi, stiff_tmp, damp_tmp, "Frequency [Hz]", path_results, name)
     else:
         # if angular frequency
-        create_plot(omega / 2. / np.pi, stiff_tmp, damp_tmp, r"$\omega$ [rad/s]", path_results, name)
+        create_plot(omega, stiff_tmp, damp_tmp, r"$\omega$ [rad/s]", path_results, name)
 
     return
 
