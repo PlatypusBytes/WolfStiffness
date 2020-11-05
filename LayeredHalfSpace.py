@@ -237,11 +237,10 @@ def write_output(path, data, omega, freq):
             f.write(str(omega[i]) + ";" +
                     str(data.K_dyn[i]) + ";" +
                     str(np.real(data.K_dyn[i])) + ";" +
-                    str(np.imag(data.K_dyn[i] * data.radius / data.cs[1]) / omega[i]) + "\n")
+                    str(np.imag(data.K_dyn[i]) / (omega[i] * data.radius / np.real(data.cs[1]))) + "\n")
             # add to tmp variables
-            stiff_tmp.append(np.abs(np.real(data.K_dyn[i])))
-            damp_tmp.append(np.abs(np.imag(data.K_dyn[i] * data.radius / data.cs[1]) / omega[i]))
-
+            stiff_tmp.append(np.real(data.K_dyn[i]))
+            damp_tmp.append(np.imag(data.K_dyn[i]) / (omega[i] * data.radius / np.real(data.cs[1])))
 
     # make plots
     if freq:

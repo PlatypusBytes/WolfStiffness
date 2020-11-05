@@ -27,4 +27,4 @@ if __name__ == "__main__":
     # creates files with the hash version of the git
     os.system(r"git describe --all --long > version.txt")
     # runs stiffness
-    wolf_stiffness("./example/input.csv", np.linspace(0, 500, 50))
+    wolf_stiffness("./example/input.csv", np.linspace(0, 5, 50))
