@@ -1,12 +1,11 @@
 import sys
 import os
 import json
-import matplotlib.pylab as plt
 import numpy as np
-np.seterr(all="ignore")
-
+# import wolf packages
 import utils
 
+np.seterr(all="ignore")
 
 class Layers:
     """ Based on Foundation vibration analysis: A strength of materials approach

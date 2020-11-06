@@ -1,5 +1,5 @@
-import numpy as np
 import os
+# import wolf packages
 import LayeredHalfSpace
 
 
@@ -22,10 +22,3 @@ def wolf_stiffness(layer_file, omega, freq=False, output_folder="./"):
                                   data, omega, freq)
 
     return data
-
-
-if __name__ == "__main__":
-    # creates files with the hash version of the git
-    os.system(r"git describe --all --long > version.txt")
-    # runs stiffness
-    wolf_stiffness("./example/input.csv", np.linspace(0, 5, 50), output_folder="./example")
