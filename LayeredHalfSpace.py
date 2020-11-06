@@ -1,8 +1,17 @@
 import sys
 import os
+import json
 import matplotlib.pylab as plt
 import numpy as np
 np.seterr(all="ignore")
+
+
+class ComplexEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, complex):
+            return [obj.real, obj.imag]
+        # Let the base class default method raise the TypeError
+        return json.JSONEncoder.default(self, obj)
 
 
 class Layers:
@@ -226,29 +235,24 @@ def write_output(path, data, omega, freq):
     path_results, name = os.path.split(path)[:2]
     name = name.split(".csv")[0]
 
-    # tmp variables for plot
-    stiff_tmp = []
-    damp_tmp = []
+    # create data dump
+    res = {"omega": omega.tolist(),
+           "complex dynamic stiffness": data.K_dyn.tolist(),
+           "stiffness": np.real(data.K_dyn).tolist(),
+           "damping": (np.imag(data.K_dyn) / (omega * data.radius / np.real(data.cs[1]))).tolist(),
+           }
 
-    # write table => frequency ; complex stiffness (real; imaginary)
-    with open(os.path.join(path_results, "Kdyn_" + str(name) + ".csv"), "w") as f:
-        f.write("omega [rad/s];Complex dynamic stiffness [N/m2];Stiffness [N/m2];Damping [Ns/m2]\n")
-        for i in range(len(omega)):
-            f.write(str(omega[i]) + ";" +
-                    str(data.K_dyn[i]) + ";" +
-                    str(np.real(data.K_dyn[i])) + ";" +
-                    str(np.imag(data.K_dyn[i]) / (omega[i] * data.radius / np.real(data.cs[1]))) + "\n")
-            # add to tmp variables
-            stiff_tmp.append(np.real(data.K_dyn[i]))
-            damp_tmp.append(np.imag(data.K_dyn[i]) / (omega[i] * data.radius / np.real(data.cs[1])))
+    # dump json
+    with open(os.path.join(path_results, "Kdyn_" + str(name) + ".json"), "w") as f:
+        json.dump(res, f, indent=2, cls=ComplexEncoder)
 
     # make plots
     if freq:
         # if frequency
-        create_plot(omega / 2. / np.pi, stiff_tmp, damp_tmp, "Frequency [Hz]", path_results, name)
+        create_plot(omega / 2. / np.pi, res["stiffness"], res["damping"], "Frequency [Hz]", path_results, name)
     else:
         # if angular frequency
-        create_plot(omega, stiff_tmp, damp_tmp, r"$\omega$ [rad/s]", path_results, name)
+        create_plot(omega, res["stiffness"], res["damping"], r"$\omega$ [rad/s]", path_results, name)
 
     return
 
