@@ -5,13 +5,7 @@ import matplotlib.pylab as plt
 import numpy as np
 np.seterr(all="ignore")
 
-
-class ComplexEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, complex):
-            return [obj.real, obj.imag]
-        # Let the base class default method raise the TypeError
-        return json.JSONEncoder.default(self, obj)
+import utils
 
 
 class Layers:
@@ -230,10 +224,11 @@ def read_file(file_name):
     return lines
 
 
-def write_output(path, data, omega, freq):
+def write_output(path_results, name, data, omega, freq):
 
-    path_results, name = os.path.split(path)[:2]
-    name = name.split(".csv")[0]
+    # if output folder does not exist create
+    if not os.path.isdir(path_results):
+        os.makedirs(path_results)
 
     # create data dump
     res = {"omega": omega.tolist(),
@@ -243,49 +238,19 @@ def write_output(path, data, omega, freq):
            }
 
     # dump json
-    with open(os.path.join(path_results, "Kdyn_" + str(name) + ".json"), "w") as f:
-        json.dump(res, f, indent=2, cls=ComplexEncoder)
+    with open(os.path.join(path_results, f"Kdyn_{name}.json"), "w") as f:
+        json.dump(res, f, indent=2, cls=utils.ComplexEncoder)
 
     # make plots
     if freq:
         # if frequency
-        create_plot(omega / 2. / np.pi, res["stiffness"], res["damping"], "Frequency [Hz]", path_results, name)
+        utils.create_plot(omega / 2. / np.pi, res["stiffness"], res["damping"], "Frequency [Hz]", path_results, name)
     else:
         # if angular frequency
-        create_plot(omega, res["stiffness"], res["damping"], r"$\omega$ [rad/s]", path_results, name)
+        utils.create_plot(omega, res["stiffness"], res["damping"], r"$\omega$ [rad/s]", path_results, name)
 
     return
 
-
-def create_plot(frequency, stiff, damp, label_x, path_results, name):
-
-    # create figure
-    fig, ax = plt.subplots(1, 2, figsize=(8.5, 3.5))
-    ax[0].set_position([0.13, 0.13, 0.35, 0.80])
-    ax[1].set_position([0.60, 0.13, 0.35, 0.80])
-    plt.rcParams.update({'font.size': 10})
-
-    # plot stiffness
-    ax[0].grid()
-    ax[0].plot(frequency, stiff)
-    ax[0].set_xlabel(label_x)
-    ax[0].set_ylabel(r'K$_{dyn}$ [N/m]')
-    ax[0].set_xlim((frequency[0], frequency[-1]))
-    # ax[0].set_ylim(bottom=0)
-
-    # plot damping
-    ax[1].grid()
-    ax[1].plot(frequency, damp)
-    ax[1].set_xlabel(label_x)
-    ax[1].set_ylabel(r'Damping [Ns/m]')
-    ax[1].set_xlim((frequency[0], frequency[-1]))
-    # ax[1].set_ylim(bottom=0)
-
-    # save fig
-    plt.savefig(os.path.join(path_results, str(name) + ".png"))
-    plt.savefig(os.path.join(path_results, str(name) + ".pdf"))
-    plt.close()
-    return
 
 # Validation with Wolf & Deeks pg: 108
 # parameters:
