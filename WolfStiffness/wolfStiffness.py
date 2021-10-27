@@ -1,6 +1,6 @@
 import os
 # import wolf packages
-import LayeredHalfSpace
+from . import LayeredHalfSpace
 
 
 def wolf_stiffness(layer_file, omega, freq=False, output_folder="./"):

@@ -4,8 +4,18 @@ import json
 import shutil
 import numpy as np
 # import package
-import LayeredHalfSpace
-import wolfStiffness
+from WolfStiffness import LayeredHalfSpace, wolfStiffness
+
+
+def compare_dicts(dic1, dic2):
+
+    tol = 1e-6
+    if not dic1.keys() == dic2.keys():
+        return False
+    for k in dic1.keys():
+        if np.any(np.array(dic1[k]) - np.array(dic2[k]) >= tol):
+            return False
+    return True
 
 
 class TestWolf(unittest.TestCase):
@@ -42,7 +52,7 @@ class TestWolf(unittest.TestCase):
         with open(os.path.join(self.output_folder, "Kdyn_input_V.json")) as f:
             data = json.load(f)
 
-        self.assertTrue(data == self.vertical)
+        self.assertTrue(compare_dicts(data, self.vertical))
         return
 
     def test_horizontal_solution(self):
@@ -64,7 +74,7 @@ class TestWolf(unittest.TestCase):
         with open(os.path.join(self.output_folder, "Kdyn_input_H.json")) as f:
             data = json.load(f)
 
-        self.assertTrue(data == self.horizontal)
+        self.assertTrue(compare_dicts(data, self.horizontal))
         return
 
     def test_wolfstiff_files(self):
@@ -74,7 +84,7 @@ class TestWolf(unittest.TestCase):
 
         # check if folders and files exist
         self.assertTrue(os.path.isdir(self.output_folder))
-        self.assertTrue(os.path.isfile(os.path.join(self.output_folder, "KDyn_input_V.json")))
+        self.assertTrue(os.path.isfile(os.path.join(self.output_folder, "Kdyn_input_V.json")))
         self.assertTrue(os.path.isfile(os.path.join(self.output_folder, "input_V.png")))
         self.assertTrue(os.path.isfile(os.path.join(self.output_folder, "input_V.pdf")))
 
