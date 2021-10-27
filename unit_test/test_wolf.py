@@ -4,7 +4,7 @@ import json
 import shutil
 import numpy as np
 # import package
-from WolfStiffness import LayeredHalfSpace, wolfStiffness
+from WolfStiffness.wolfStiffness import WolfStiffness
 
 
 def compare_dicts(dic1, dic2):
@@ -36,17 +36,10 @@ class TestWolf(unittest.TestCase):
     def test_vertical_solution(self):
         layer_file = "files/input_V.csv"
 
-        layers = LayeredHalfSpace.read_file(layer_file)
-
-        data = LayeredHalfSpace.Layers(layers)
-
-        data.assign_properties()
-        data.correction_incompressible()
-        data.static_cone()
-        data.dynamic_stiffness(self.omega)
-
-        LayeredHalfSpace.write_output(self.output_folder, os.path.splitext(os.path.split(layer_file)[-1])[0],
-                                      data, self.omega, self.freq)
+        wolf = WolfStiffness(self.omega, output_folder=self.output_folder)
+        wolf.read_csv(layer_file)
+        wolf.compute()
+        wolf.write()
 
         # compare dicts
         with open(os.path.join(self.output_folder, "Kdyn_input_V.json")) as f:
@@ -58,17 +51,10 @@ class TestWolf(unittest.TestCase):
     def test_horizontal_solution(self):
         layer_file = "files/input_H.csv"
 
-        layers = LayeredHalfSpace.read_file(layer_file)
-
-        data = LayeredHalfSpace.Layers(layers)
-
-        data.assign_properties()
-        data.correction_incompressible()
-        data.static_cone()
-        data.dynamic_stiffness(self.omega)
-
-        LayeredHalfSpace.write_output(self.output_folder, os.path.splitext(os.path.split(layer_file)[-1])[0],
-                                      data, self.omega, self.freq)
+        wolf = WolfStiffness(self.omega, output_folder=self.output_folder)
+        wolf.read_csv(layer_file)
+        wolf.compute()
+        wolf.write()
 
         # compare dicts
         with open(os.path.join(self.output_folder, "Kdyn_input_H.json")) as f:
@@ -80,7 +66,10 @@ class TestWolf(unittest.TestCase):
     def test_wolfstiff_files(self):
         layer_file = "files/input_V.csv"
 
-        wolfStiffness.wolf_stiffness(layer_file, self.omega, freq=False, output_folder=self.output_folder)
+        wolf = WolfStiffness(self.omega, output_folder=self.output_folder)
+        wolf.read_csv(layer_file)
+        wolf.compute()
+        wolf.write()
 
         # check if folders and files exist
         self.assertTrue(os.path.isdir(self.output_folder))

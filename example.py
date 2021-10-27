@@ -7,7 +7,7 @@ import json
 import numpy as np
 import matplotlib.pylab as plt
 # import wolf packages
-from WolfStiffness.wolfStiffness import wolf_stiffness
+from WolfStiffness.wolfStiffness import WolfStiffness
 
 
 def plot(data, kappa, cs1):
@@ -49,7 +49,11 @@ def plot(data, kappa, cs1):
 
 if __name__ == "__main__":
     # runs stiffness
-    wolf_stiffness("example/input_H.csv", np.linspace(0, 5, 150), output_folder="./example")
+    wolf = WolfStiffness(np.linspace(0, 5, 150), output_folder="./example")
+    wolf.read_csv("example/input_H.csv")
+    wolf.compute()
+    wolf.write()
+
     # visualise the results
     with open("./example/Kdyn_input_H.json", "r") as f:
         data = json.load(f)
@@ -59,7 +63,11 @@ if __name__ == "__main__":
     plot(data, kappa, cs1)
 
     # runs stiffness
-    wolf_stiffness("example/input_V.csv", np.linspace(0, 5, 150), output_folder="./example")
+    wolf = WolfStiffness(np.linspace(0, 5, 150), output_folder="./example")
+    wolf.read_csv("example/input_V.csv")
+    wolf.compute()
+    wolf.write()
+
     # visualise the results
     with open("./example/Kdyn_input_V.json", "r") as f:
         data = json.load(f)
