@@ -4,7 +4,7 @@ import json
 import shutil
 import numpy as np
 # import package
-from WolfStiffness.wolfStiffness import WolfStiffness
+from ..WolfStiffness.wolfStiffness import WolfStiffness
 
 
 def compare_dicts(dic1, dic2):
@@ -25,16 +25,16 @@ class TestWolf(unittest.TestCase):
         self.freq = False
 
         # load datasets
-        with open("./files/Kdyn_vertical.json") as f:
+        with open("./unit_test/files/Kdyn_vertical.json") as f:
             self.vertical = json.load(f)
 
-        with open("./files/Kdyn_horizontal.json") as f:
+        with open("./unit_test/files/Kdyn_horizontal.json") as f:
             self.horizontal = json.load(f)
 
         return
 
     def test_vertical_solution(self):
-        layer_file = "files/input_V.csv"
+        layer_file = "./unit_test/files/input_V.csv"
 
         wolf = WolfStiffness(self.omega, output_folder=self.output_folder)
         wolf.read_csv(layer_file)
@@ -49,7 +49,7 @@ class TestWolf(unittest.TestCase):
         return
 
     def test_horizontal_solution(self):
-        layer_file = "files/input_H.csv"
+        layer_file = "./unit_test/files/input_H.csv"
 
         wolf = WolfStiffness(self.omega, output_folder=self.output_folder)
         wolf.read_csv(layer_file)
@@ -64,7 +64,7 @@ class TestWolf(unittest.TestCase):
         return
 
     def test_wolfstiff_files(self):
-        layer_file = "files/input_V.csv"
+        layer_file = "./unit_test/files/input_V.csv"
 
         wolf = WolfStiffness(self.omega, output_folder=self.output_folder)
         wolf.read_csv(layer_file)

@@ -24,7 +24,13 @@ class WolfStiffness:
         self.name = os.path.splitext(os.path.split(layer_file)[-1])[0]
         return
 
-    def read_json(self):
+    def parse_layers(self, force, soil, name):
+
+        self.layers.append(force)
+        for so in soil:
+            self.layers.append(",".join(so))
+
+        self.name = name
         return
 
     def compute(self):
