@@ -25,14 +25,7 @@ pipelines:
         script:
           - conda env update -n wolf --file env.yml
           - conda activate wolf
-          - pytest -v --cov=WolfStiffness --cov-report html:test-reports/coverage unit_test/
-          - apt-get update && apt-get --yes install zip
-          - zip -r test-reports/coverage.zip test-reports/coverage
-          - pipe: atlassian/bitbucket-upload-file:0.3.1
-            variables:
-              BITBUCKET_USERNAME: $BITBUCKET_USERNAME
-              BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
-              FILENAME: "test-reports/coverage.zip"
+          - pytest -v unit_test/
 
 definitions:
    caches:
