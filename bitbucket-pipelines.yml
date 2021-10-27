@@ -17,22 +17,22 @@ pipelines:
           - pip
         script: # Modify the commands below to build your repository.
           - conda env update -n wolf --file env.yml
-      - step: # Run tests
-          name: Run tests and codecoverage.
-          caches:
-              - conda
-              - pip
-          script:
-              - conda env update -n wolf --file env.yml
-              - conda activate wolf
-              - pytest -v --cov=WolfStiffness --cov-report html:test-reports/coverage unit_test/
-              - apt-get update && apt-get --yes install zip
-              - zip -r test-reports/coverage.zip test-reports/coverage
-              - pipe: atlassian/bitbucket-upload-file:0.3.1
-                variables:
-                    BITBUCKET_USERNAME: $BITBUCKET_USERNAME
-                    BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
-                    FILENAME: "test-reports/coverage.zip"
+    - step: # Run tests
+        name: Run tests and codecoverage.
+        caches:
+          - conda
+          - pip
+        script:
+          - conda env update -n wolf --file env.yml
+          - conda activate wolf
+          - pytest -v --cov=WolfStiffness --cov-report html:test-reports/coverage unit_test/
+          - apt-get update && apt-get --yes install zip
+          - zip -r test-reports/coverage.zip test-reports/coverage
+          - pipe: atlassian/bitbucket-upload-file:0.3.1
+            variables:
+              BITBUCKET_USERNAME: $BITBUCKET_USERNAME
+              BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
+              FILENAME: "test-reports/coverage.zip"
 
 definitions:
    caches:
