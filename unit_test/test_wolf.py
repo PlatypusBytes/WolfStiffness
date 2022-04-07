@@ -4,7 +4,7 @@ import json
 import shutil
 import numpy as np
 # import package
-from ..WolfStiffness.wolfStiffness import WolfStiffness
+from WolfStiffness.wolfStiffness import WolfStiffness
 
 
 def compare_dicts(dic1, dic2):

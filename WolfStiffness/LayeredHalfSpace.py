@@ -3,9 +3,10 @@ import os
 import json
 import numpy as np
 # import wolf packages
-from . import utils
+from WolfStiffness import utils
 
 np.seterr(all="ignore")
+
 
 class Layers:
     """ Based on Foundation vibration analysis: A strength of materials approach

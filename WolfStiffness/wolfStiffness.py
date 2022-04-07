@@ -1,6 +1,6 @@
 import os
 # import wolf packages
-from . import LayeredHalfSpace
+from WolfStiffness import LayeredHalfSpace
 
 
 class WolfStiffness:
