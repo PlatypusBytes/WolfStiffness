@@ -10,21 +10,15 @@ clone:
 
 pipelines:
   default:
-    - step:
-        name: Install requirements.
-        caches:
-          - conda
-          - pip
-        script: # Modify the commands below to build your repository.
-          - conda env update -n wolf --file env.yml
-          - pip install .
     - step: # Run tests
-        name: Run tests and codecoverage.
+        name: Run tests.
         caches:
           - conda
           - pip
         script:
+          - conda env update -n wolf --file env.yml
           - conda activate wolf
+          - pip install .
           - pytest -v unit_test/
 
 definitions:
