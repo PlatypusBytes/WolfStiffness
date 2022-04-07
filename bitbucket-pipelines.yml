@@ -17,7 +17,7 @@ pipelines:
           - pip
         script: # Modify the commands below to build your repository.
           - conda env update -n wolf --file env.yml
-          - pip install git+https://zuada@bitbucket.org/DeltaresGEO/wolfstiff.git@WolfStiffness
+          - pip install git+https://bitbucket.org/DeltaresGEO/wolfstiff.git@WolfStiffness
     - step: # Run tests
         name: Run tests and codecoverage.
         caches:
