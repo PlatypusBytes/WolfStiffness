@@ -17,13 +17,13 @@ pipelines:
           - pip
         script: # Modify the commands below to build your repository.
           - conda env update -n wolf --file env.yml
+          - pip install WolfStiffness
     - step: # Run tests
         name: Run tests and codecoverage.
         caches:
           - conda
           - pip
         script:
-          - conda env update -n wolf --file env.yml
           - conda activate wolf
           - pytest -v unit_test/
 
