@@ -6,7 +6,7 @@ import numpy as np
 # import package
 from WolfStiffness.wolfStiffness import WolfStiffness
 
-tol = 1e-12
+tol = 1e-6
 
 
 class TestWolf(unittest.TestCase):
