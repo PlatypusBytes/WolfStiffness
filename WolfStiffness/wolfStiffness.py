@@ -41,7 +41,7 @@ class WolfStiffness:
         Parse the data to object structure
 
         :param force: force
-        :param soil: soil paramenters
+        :param soil: soil parameters
         :param name: name of the analysis
         """
         # ToDo: work in progress
@@ -64,12 +64,13 @@ class WolfStiffness:
         self.data.dynamic_stiffness(self.omega)
         return
 
-    def write(self, freq=False) -> object:
+    def write(self, plot=True, freq=False) -> object:
         """
         writes the results
 
-        :param freq: (optional: default False) plots the graphs in Hz instead of rad
+        :param plot: (optional: default False) plots the graphs
+        :param freq: (optional: default False) plots the graphs in Hz instead of rad (only if plots == True)
         """
         LayeredHalfSpace.write_output(self.output_folder, self.name,
-                                      self.data, self.omega, freq)
+                                      self.data, self.omega, plot, freq)
         return

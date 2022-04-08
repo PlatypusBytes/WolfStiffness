@@ -224,7 +224,7 @@ def read_file(file_name):
     return lines
 
 
-def write_output(path_results, name, data, omega, freq):
+def write_output(path_results, name, data, omega, plot, freq):
 
     # if output folder does not exist create
     if not os.path.isdir(path_results):
@@ -241,13 +241,14 @@ def write_output(path_results, name, data, omega, freq):
     with open(os.path.join(path_results, f"Kdyn_{name}.json"), "w") as f:
         json.dump(res, f, indent=2, cls=utils.ComplexEncoder)
 
-    # make plots
-    if freq:
-        # if frequency
-        utils.create_plot(omega / 2. / np.pi, res["stiffness"], res["damping"], "Frequency [Hz]", path_results, name)
-    else:
-        # if angular frequency
-        utils.create_plot(omega, res["stiffness"], res["damping"], r"$\omega$ [rad/s]", path_results, name)
+    if plot:
+        # make plots
+        if freq:
+            # if frequency
+            utils.create_plot(omega / 2. / np.pi, res["stiffness"], res["damping"], "Frequency [Hz]", path_results, name)
+        else:
+            # if angular frequency
+            utils.create_plot(omega, res["stiffness"], res["damping"], r"$\omega$ [rad/s]", path_results, name)
 
     return
 
