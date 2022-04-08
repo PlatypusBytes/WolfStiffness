@@ -6,16 +6,7 @@ import numpy as np
 # import package
 from WolfStiffness.wolfStiffness import WolfStiffness
 
-
-def compare_dicts(dic1, dic2):
-
-    tol = 1e-6
-    if not dic1.keys() == dic2.keys():
-        return False
-    for k in dic1.keys():
-        if np.any(np.array(dic1[k]) - np.array(dic2[k]) >= tol):
-            return False
-    return True
+tol = 1e-12
 
 
 class TestWolf(unittest.TestCase):
@@ -82,6 +73,30 @@ class TestWolf(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.output_folder)
         return
+
+
+def compare_dicts(dic1, dic2):
+    result = []
+    for key in dic1:
+        for j in range(len(dic1[key])):
+            if isinstance(dic1[key][j], list):
+                for k in range(len(dic1[key][j])):
+                    if (dic1[key][j][k] - dic2[key][j][k]) < tol:
+                        result.append(True)
+                    else:
+                        result.append(False)
+            else:
+                if (dic1[key][j] - dic2[key][j]) < tol:
+                    result.append(True)
+                elif (dic1[key][j] == np.inf) and (dic2[key][j] == np.inf):
+                    result.append(True)
+                else:
+                    result.append(False)
+    if all(result):
+        result = True
+    else:
+        result = False
+    return result
 
 
 if __name__ == '__main__':  # pragma: no cover
