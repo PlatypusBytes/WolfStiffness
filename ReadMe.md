@@ -1,4 +1,5 @@
 # WolfStiffness
+![Tests](https://github.com/StemVibrations/STEM/actions/workflows/tests.yml/badge.svg)
 
 ## Background
 

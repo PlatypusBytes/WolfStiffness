@@ -1,0 +1,7 @@
+.idea/
+.code/
+.tox/
+__pycache__
+WolfStiffness.egg-info/
+build/
+venv/
