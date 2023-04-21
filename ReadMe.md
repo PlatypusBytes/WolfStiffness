@@ -53,7 +53,7 @@ The last layer needs to have _inf_ thickness.
 
 Install the package using:
 ```bash
-pip install git+https://bitbucket.org/DeltaresGEO/wolfstiff.git
+pip install git+https://github.com/PlatypusBytes/WolfStiffness.git
 ```
 
 To run the code, please follow:
