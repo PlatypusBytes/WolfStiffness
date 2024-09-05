@@ -11,9 +11,11 @@ np.seterr(all="ignore")
 class Layers:
     """ Based on Foundation vibration analysis: A strength of materials approach
         Wolf & Deeks
-        """
-
+    """
     def __init__(self, data):
+        r"""
+        Initialize the class with the data from the input file
+        """
         # create variables
         self.name = []
         self.G = []
@@ -60,10 +62,11 @@ class Layers:
                 self.rho.append(np.nan)
                 self.qsi.append(np.nan)
                 self.amplitude.append([])
-        return
 
     def assign_properties(self):
-
+        """
+        Assign properties to the layers
+        """
         for i in range(len(self.name)):
             G_star = self.G[i] * (1. + 2. * 1j * self.qsi[i])
             Ec = (1. - self.nu[i]) / (1. - 2. * self.nu[i]) * 2 * G_star
@@ -78,9 +81,13 @@ class Layers:
             else:
                 sys.exit("direction is not valid. must be V or H")
 
-        return
-
     def dynamic_stiffness(self, omega):
+        """
+        Compute the dynamic stiffness
+
+        Args:
+            omega (np.array): angular frequency
+        """
 
         # generate variable amplitude
         for i in range(len(self.amplitude)):
@@ -107,10 +114,17 @@ class Layers:
         # Dynamic stiffness
         self.K_dyn = 1. / self.Gn
 
-        return
-
     def transmit(self, direction, index, radius, u0, omega):
+        """
+        Transmit the wave from one layer to another
 
+        Args:
+            direction (int): direction of the wave
+            index (int): index of the layer
+            radius (float): radius of the layer
+            u0 (complex): initial displacement
+            omega (np.array): angular frequency
+        """
         if direction == -1:  # up
             idx_layer_A = index + 1
             idx_layer_B = index
@@ -140,9 +154,16 @@ class Layers:
             if self.thickness[idx_layer_B] != np.inf:
                 self.transmit(direction, index + direction, radius_new, h, omega)
 
-        return
-
     def alpha(self, idx_A, idx_B, rad, omega):
+        """
+        Compute the reflection coefficient
+
+        Args:
+            idx_A (int): index of the layer A
+            idx_B (int): index of the layer B
+            rad (float): radius
+            omega (np.array): angular frequency of the wave
+        """
 
         # alpha
         # pg 58 Eq: 4.16-4.18
@@ -162,6 +183,12 @@ class Layers:
         return alpha
 
     def static_cone(self):
+        """
+        Compute the static cone apex
+
+        Returns:
+            z0_r (list): static cone apex
+        """
 
         # compute static cone apex
         for i in range(len(self.name)):
@@ -175,9 +202,11 @@ class Layers:
                 z0_r0 = np.pi / 8 * (2. - self.nu[i])
 
             self.z0_r.append(z0_r0)
-        return
 
     def correction_incompressible(self):
+        """
+        Correction for incompressible solids
+        """
 
         # correction for incompressible solids
         # the compression wave, as poisson gets to 0.5 tends to infinite
@@ -194,9 +223,14 @@ class Layers:
                 self.delta_M.append(2.4 * (self.nu[i] - 1. / 3.) * self.rho[i] * np.pi * self.radius ** 3.)
             else:
                 self.delta_M.append(0.)
-        return
 
     def stiff_cone(self, omega):
+        """
+        Compute the dynamic stiffness of the cone
+
+        Args:
+            omega (np.array): angular frequency
+        """
 
         # dynamic load
         # pg 32 Eq: 3.16 (trapped mass pg. 45 Eq: 3.87)
@@ -206,10 +240,18 @@ class Layers:
                           - omega ** 2 * self.delta_M[i])
 
             self.static_stiff.append(self.rho[i] * self.c[i] ** 2 * np.pi * self.radius ** 2 / (self.z0_r[i] * self.radius))
-        return
 
 
 def read_file(file_name):
+    """
+    Read the input file
+
+    Args:
+        file_name (str): name of the file
+
+    Returns:
+        list: list of the layers
+    """
 
     if not os.path.isfile(file_name):
         sys.exit("Layers file name does not exist.")
@@ -225,6 +267,17 @@ def read_file(file_name):
 
 
 def write_output(path_results, name, data, omega, plot, freq):
+    """
+    Write the output to a json file
+
+    Args:
+        path_results (str): path to the output folder
+        name (str): name of the file
+        data (object): object with the data
+        omega (np.array): angular frequency
+        plot (bool): create plots
+        freq (bool): frequency
+    """
 
     # if output folder does not exist create
     if not os.path.isdir(path_results):
@@ -249,8 +302,6 @@ def write_output(path_results, name, data, omega, plot, freq):
         else:
             # if angular frequency
             utils.create_plot(omega, res["stiffness"], res["damping"], r"$\omega$ [rad/s]", path_results, name)
-
-    return
 
 
 # Validation with Wolf & Deeks pg: 108

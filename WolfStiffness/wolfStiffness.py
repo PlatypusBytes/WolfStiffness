@@ -23,7 +23,6 @@ class WolfStiffness:
         self.layers = []  # input layers and force
         self.data = []  # data results
         self.name = []  # name of the analysis
-        return
 
     def read_csv(self, layer_file) -> object:
         """
@@ -34,7 +33,6 @@ class WolfStiffness:
         """
         self.layers = LayeredHalfSpace.read_file(layer_file)
         self.name = os.path.splitext(os.path.split(layer_file)[-1])[0]
-        return
 
     def parse_layers(self, force, soil, name) -> object:
         """
@@ -50,7 +48,6 @@ class WolfStiffness:
             self.layers.append(",".join(so))
 
         self.name = name
-        return
 
     def compute(self) -> object:
         """
@@ -62,7 +59,6 @@ class WolfStiffness:
         self.data.correction_incompressible()
         self.data.static_cone()
         self.data.dynamic_stiffness(self.omega)
-        return
 
     def write(self, plot=True, freq=False) -> object:
         """
@@ -73,4 +69,3 @@ class WolfStiffness:
         """
         LayeredHalfSpace.write_output(self.output_folder, self.name,
                                       self.data, self.omega, plot, freq)
-        return
